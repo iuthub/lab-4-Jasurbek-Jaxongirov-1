@@ -1,5 +1,27 @@
 <?php
     $playlist = $_REQUEST["playlist"];
+    $root = "./";
+    $song_folder = $root."songs/";
+
+    function file_size_info($size = 0){
+        if($size>=0 && $size<=1023)
+        {
+            $size .="bytes";
+        }
+        elseif($size>=1024 && $size<=1048575)
+        {
+            $size =round($size / 1024);
+
+            $size .= "KB";
+        }
+        else{
+            $size = round($size / (1024*1024));
+            $size .= "MB";
+        }
+
+
+        return $size;
+    }
 ?>
 <!doctype html>
 <html lang="en">
@@ -22,18 +44,25 @@
 <div id="listarea">
     <ul id="musiclist">
         <?php
-        if(!isset($playlist))
-        {
-        ?>
+            if(file_exists($song_folder.$playlist) && isset($playlist)){
+            $playlist_musics = file($song_folder.$playlist,FILE_IGNORE_NEW_LINES);
+            foreach ($playlist_musics as $musics){
 
+        ?>
+        <li class="mp3item">
+            <a download="" href="<?=$song_folder.$musics?>"><?= $musics ?></a>(<?=file_size_info(filesize($song_folder.$musics))?>)
+        </li>
         <?php
-            $root = "./";
-            $song_folder = $root."/songs";
-            $music_files = glob($song_folder."/*.m*");
+        }
+        }
+            else{
+
+            $music_files = glob($song_folder."/*.mp3");
             foreach($music_files as $file_names){
         ?>
         <li class="mp3item">
-            <a href="songs/<?= $file_names ?>>"><?= basename($file_names) ?></a>
+
+            <a download="" href="songs/<?= $file_names ?>>"><?= basename($file_names) ?></a>(<?=file_size_info(filesize($file_names))?>)
         </li>
         <?php
             }
@@ -45,15 +74,15 @@
         foreach($text_files as $file_names){
             ?>
             <li class="playlistitem">
-                <a href="songs/<?= $file_names ?>>"><?= basename($file_names) ?>></a>
+                <a download="" href="songs/<?= $file_names ?>>"><?= basename($file_names) ?></a>(<?=file_size_info(filesize($file_names))?>)
             </li>
             <?php
         }
         ?>
         <?php
             }
-
         ?>
+
     </ul>
 </div>
 </body>
