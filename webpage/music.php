@@ -1,3 +1,6 @@
+<?php
+    $playlist = $_REQUEST["playlist"];
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,6 +21,11 @@
 
 <div id="listarea">
     <ul id="musiclist">
+        <?php
+        if(!isset($playlist))
+        {
+        ?>
+
         <?php
             $root = "./";
             $song_folder = $root."/songs";
@@ -42,7 +50,10 @@
             <?php
         }
         ?>
+        <?php
+            }
 
+        ?>
     </ul>
 </div>
 </body>
